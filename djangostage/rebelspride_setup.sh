@@ -2,6 +2,8 @@
 # Author: danielhaendel (Daniel Haendel)
 # License: BOCHUM REBELS e.V.
 # https://raw.githubusercontent.com/danielhaendel/django_setup/master/djangostage/rebelspride_setup.sh
+#
+# bash -c "$(wget -qO - https://raw.githubusercontent.com/danielhaendel/django_setup/master/djangostage/rebelspride_setup.sh)"
 
 clear
 Black="\[\033[0;30m\]"        # Black
