@@ -24,11 +24,18 @@ echo ""
 #update system
 sudo apt-get update
 sudo apt-get upgrade -y
-##install python3
-#sudo apt-get install python3 -y
-##install pip3
-#sudo apt-get install python3-pip -y
-##create new user
+#add user to sudo group
+apt install -y python3-pip python3-dev libpq-dev nginx git
+#create new user
+echo "Creating new user (rebelspride)..."
+sleep 2
+adduser rebelspride
+echo "Adding user to sudo group..."
+sleep 1
+usermod -aG sudo rebelspride
+echo "Switching to new user..."
+sleep 1
+su - rebelspride
 #echo "Please enter the username for the new user:"
 #read new_user
 #if [ -z "$new_user" ]; then
