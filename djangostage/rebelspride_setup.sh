@@ -18,7 +18,7 @@ cat <<"EOF"
 
                                      BOCHUM REBELS e.V.
 EOF
-
+echo ""
 echo -e "Please wait, updating system..."
 #update system
 #sudo apt-get update
