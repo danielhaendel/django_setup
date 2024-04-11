@@ -20,9 +20,10 @@ cat <<"EOF"
 EOF
 echo ""
 echo -e "Please wait, updating system..."
+echo ""
 #update system
-#sudo apt-get update
-#sudo apt-get upgrade -y
+sudo apt-get update
+sudo apt-get upgrade -y
 ##install python3
 #sudo apt-get install python3 -y
 ##install pip3
