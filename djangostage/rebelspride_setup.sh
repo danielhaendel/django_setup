@@ -3,8 +3,11 @@
 # License: BOCHUM REBELS e.V.
 # https://raw.githubusercontent.com/danielhaendel/django_setup/master/djangostage/rebelspride_setup.sh
 
-
-echo "Welcome to rebelspride Django Staging Server"
+clear
+RED='\033[0;31m'
+NC='\033[0m' # Keine Farbe
+echo -e "${RED}Welcome to RebelsPride Django Staging Server${NC}"
+#echo "Welcome to rebelspride Django Staging Server"
 echo ""
 cat <<"EOF"
     ____       __         __     ____       _     __
@@ -15,8 +18,7 @@ cat <<"EOF"
 
                                      BOCHUM REBELS e.V.
 EOF
-}
-header_info
+
 echo -e "Please wait, updating system..."
 #update system
 #sudo apt-get update
