@@ -28,6 +28,7 @@ EOF
 echo ""
 echo -e "Please wait, updating system..."
 echo ""
+sleep 5
 #update system
 sudo apt-get update
 sudo apt-get upgrade -y
@@ -42,8 +43,8 @@ sleep 1
 usermod -aG sudo rebelspride
 echo "${Green}Switching to new user...${NC}"
 sleep 2
-clear
 su - rebelspride
+clear
 #echo "Please enter the username for the new user:"
 #read new_user
 #if [ -z "$new_user" ]; then
