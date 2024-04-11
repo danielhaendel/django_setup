@@ -4,7 +4,7 @@
 # https://raw.githubusercontent.com/danielhaendel/django_setup/master/djangostage/rebelspride_setup.sh
 
 
-echo "Welcome to Bochum Rebels Django Staging Server"
+echo "Welcome to rebelspride Django Staging Server"
 echo ""
 cat <<"EOF"
     ____       __         __     ____       _     __
@@ -13,6 +13,7 @@ cat <<"EOF"
  / _, _/  __/ /_/ /  __/ (__  ) ____/ /  / / /_/ /  __/
 /_/ |_|\___/_.___/\___/_/____/_/   /_/  /_/\__,_/\___/
 
+                                     BOCHUM REBELS e.V.
 EOF
 }
 header_info
