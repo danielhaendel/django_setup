@@ -4,9 +4,16 @@
 # https://raw.githubusercontent.com/danielhaendel/django_setup/master/djangostage/rebelspride_setup.sh
 
 clear
-RED='\033[0;31m'
+Black="\[\033[0;30m\]"        # Black
+Red="\[\033[0;31m\]"          # Red
+Green="\[\033[0;32m\]"        # Green
+Yellow="\[\033[0;33m\]"       # Yellow
+Blue="\[\033[0;34m\]"         # Blue
+Purple="\[\033[0;35m\]"       # Purple
+Cyan="\[\033[0;36m\]"         # Cyan
+White="\[\033[0;37m\]"        # White
 NC='\033[0m' # Keine Farbe
-echo -e "${RED}Welcome to RebelsPride Django Staging Server${NC}"
+echo -e "${Red}Welcome to RebelsPride Django Staging Server${NC}"
 #echo "Welcome to rebelspride Django Staging Server"
 echo ""
 cat <<"EOF"
@@ -33,8 +40,9 @@ adduser rebelspride
 echo "Adding user to sudo group..."
 sleep 1
 usermod -aG sudo rebelspride
-echo "Switching to new user..."
-sleep 1
+echo "${Green}Switching to new user...${NC}"
+sleep 2
+clear
 su - rebelspride
 #echo "Please enter the username for the new user:"
 #read new_user
