@@ -47,6 +47,28 @@ echo "${Green}Switching to new user...${NC}"
 sleep 2
 su - rebelspride
 clear
+echo "${Green}Installing NGINX...${NC}"
+sleep 2
+sudo apt install nginx
+echo "${Green}Installing Python VEnv...${NC}"
+sleep 2
+sudo apt install -y python3-venv
+#echo "${Green}Creating new directory...${NC}"
+#sleep 2
+#mkdir ~/rebelspride
+#cd ~/rebelspride
+echo "${Green}Creating new Python VEnv...${NC}"
+sleep 2
+python3 -m venv rebelspride_env
+source rebelspride_env/bin/activate
+echo "${Green}Install Django Project...${NC}"
+pip install django
+echo "${Green}Install Gunicorn...${NC}"
+pip install gunicorn
+echo "${Green}Initialize Django Projekt...${NC}"
+django-admin startproject rebelspride
+
+
 #echo "Please enter the username for the new user:"
 #read new_user
 #if [ -z "$new_user" ]; then
