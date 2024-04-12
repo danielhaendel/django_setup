@@ -52,10 +52,9 @@ sudo apt install nginx
 echo "${Green}Installing Python VEnv...${NC}"
 sleep 2
 sudo apt install -y python3-venv
-    #echo "${Green}Creating new directory...${NC}"
-    #sleep 2
-    #mkdir ~/rebelspride
-    #cd ~/rebelspride
+echo "${Green}Changing directory...${NC}"
+sleep 2
+cd home/rebelspride
 echo "${Green}Creating new Python VEnv...${NC}"
 sleep 2
 python3 -m venv rebelspride_env
