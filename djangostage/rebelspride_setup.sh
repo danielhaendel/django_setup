@@ -45,7 +45,7 @@ sleep 1
 usermod -aG sudo rebelspride
 echo "${Green}Switching to new user...${NC}"
 sleep 2
-su - rebelspride
+sudo -u rebelspride bash -c '
 clear
 echo "${Green}Installing NGINX...${NC}"
 sleep 2
