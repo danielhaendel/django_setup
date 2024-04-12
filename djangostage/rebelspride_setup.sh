@@ -46,23 +46,25 @@ usermod -aG sudo rebelspride
 echo "${Green}Switching to new user...${NC}"
 sleep 2
 sudo -u rebelspride bash -c '
-clear
 echo "${Green}Installing NGINX...${NC}"
 sleep 2
 sudo apt install nginx
 echo "${Green}Installing Python VEnv...${NC}"
 sleep 2
 sudo apt install -y python3-venv
-#echo "${Green}Creating new directory...${NC}"
-#sleep 2
-#mkdir ~/rebelspride
-#cd ~/rebelspride
+    #echo "${Green}Creating new directory...${NC}"
+    #sleep 2
+    #mkdir ~/rebelspride
+    #cd ~/rebelspride
 echo "${Green}Creating new Python VEnv...${NC}"
 sleep 2
 python3 -m venv rebelspride_env
+sleep 2
 source rebelspride_env/bin/activate
+sleep 5
 echo "${Green}Install Django Project...${NC}"
 pip install django
+sleep 2
 echo "${Green}Install Gunicorn...${NC}"
 pip install gunicorn
 echo "${Green}Initialize Django Projekt...${NC}"
