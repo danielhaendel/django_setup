@@ -76,3 +76,4 @@ django-admin startproject rebelspride
 #    exit 1
 #fi
 #echo "Adding new user..."
+'
