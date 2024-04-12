@@ -54,7 +54,7 @@ sleep 2
 sudo apt install -y python3-venv
 echo "${Green}Changing directory...${NC}"
 sleep 2
-cd home/rebelspride
+cd /home/rebelspride
 echo "${Green}Creating new Python VEnv...${NC}"
 sleep 2
 python3 -m venv rebelspride_env
@@ -68,13 +68,4 @@ echo "${Green}Install Gunicorn...${NC}"
 pip install gunicorn
 echo "${Green}Initialize Django Projekt...${NC}"
 django-admin startproject rebelspride
-
-
-#echo "Please enter the username for the new user:"
-#read new_user
-#if [ -z "$new_user" ]; then
-#    echo "No username entered. Script will be terminated."
-#    exit 1
-#fi
-#echo "Adding new user..."
 '
