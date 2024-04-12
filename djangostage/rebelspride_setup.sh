@@ -58,9 +58,7 @@ cd /home/rebelspride
 echo "${Green}Creating new Python VEnv...${NC}"
 sleep 2
 python3 -m venv rebelspride_env
-sleep 2
 source rebelspride_env/bin/activate
-sleep 5
 echo "${Green}Install Django Project...${NC}"
 pip install django
 sleep 2
