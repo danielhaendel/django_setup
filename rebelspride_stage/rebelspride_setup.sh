@@ -3,7 +3,7 @@
 # License: BOCHUM REBELS e.V.
 # https://raw.githubusercontent.com/danielhaendel/django_setup/master/djangostage/rebelspride_setup.sh
 #
-# bash -c "$(wget -qO - https://raw.githubusercontent.com/danielhaendel/django_setup/master/djangostage/rebelspride_setup.sh)"
+# bash -c "$(wget -qO - https://raw.githubusercontent.com/danielhaendel/django_setup/master/rebelspride_stage/rebelspride_setup.sh)"
 
 clear
 Black="\[\033[0;30m\]"        # Black
@@ -66,4 +66,20 @@ echo "${Green}Install Gunicorn...${NC}"
 pip install gunicorn
 echo "${Green}Initialize Django Projekt...${NC}"
 django-admin startproject rebelspride
+cd /rebelspride
+python manage.py migrate
+python manage.py makemigrations
+python manage.py collectstatic
+#hier muss die gunicorn config rein sudo nano /etc/systemd/system/gunicorn.service
+#nun nginx config
+#sudo nano /etc/nginx/sites-available/rebelspride
+#sudo ln -s /etc/nginx/sites-available/rebelspride /etc/nginx/sites-enabled
+#sudo nginx -t
+#sudo systemctl restart nginx
+#sudo systemctl enable gunicorn
+#sudo systemctl start gunicorn
+#sudo ufw allow 'Nginx Full'
 '
+
+
+#gunicorn --bind 0.0.0.0:8000 rebelspride.wsgi

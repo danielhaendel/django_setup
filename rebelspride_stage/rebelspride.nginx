@@ -1,0 +1,14 @@
+server {
+    listen 80;
+    server_name 192.168.178.45;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /home/rebelspride/rebelspride;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/rebelspride/rebelspride/rebelspride.sock;
+    }
+}
