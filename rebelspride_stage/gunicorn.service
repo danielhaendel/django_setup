@@ -5,8 +5,8 @@ After=network.target
 [Service]
 User=rebelspride
 Group=www-data
-WorkingDirectory=/home/rebelspride/rebelspride
-ExecStart=/home/rebelspride/rebelspride_env/bin/gunicorn --workers 3 --bind unix:/home/rebelspride/rebelspride/rebelspride.sock rebelspride.wsgi:application
+WorkingDirectory=/home/rebelspride/rebelspride/rebelspride
+ExecStart=/home/rebelspride/rebelspride_env/bin/gunicorn --workers 3 --bind unix:/home/rebelspride/rebelspride/rebelspride/rebelspride.sock rebelspride.wsgi:application
 
 [Install]
 WantedBy=multi-user.target

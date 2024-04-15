@@ -66,9 +66,8 @@ echo "${Green}Install Gunicorn...${NC}"
 pip install gunicorn
 echo "${Green}Initialize Django Projekt...${NC}"
 django-admin startproject rebelspride
-cd /rebelspride
+cd /home/rebelspride/rebelspride
 python manage.py migrate
-python manage.py makemigrations
 python manage.py collectstatic
 #hier muss die gunicorn config rein sudo nano /etc/systemd/system/gunicorn.service
 #nun nginx config
@@ -83,3 +82,4 @@ python manage.py collectstatic
 
 
 #gunicorn --bind 0.0.0.0:8000 rebelspride.wsgi
+#sudo rm /etc/nginx/sites-enabled/rebelspride
