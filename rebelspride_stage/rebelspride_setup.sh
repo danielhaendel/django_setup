@@ -69,6 +69,7 @@ django-admin startproject rebelspride
 cd /home/rebelspride/rebelspride
 python manage.py migrate
 python manage.py collectstatic
+su - rebelspride
 #hier muss die gunicorn config rein sudo nano /etc/systemd/system/gunicorn.service
 #nun nginx config
 #sudo nano /etc/nginx/sites-available/rebelspride
