@@ -86,7 +86,7 @@ systemctl enable gunicorn
 cat > /etc/nginx/sites-available/rebelspride << EOF
 server {
     listen 80;
-    server_name deinserver.de; # Ersetze dies durch deine Domain oder IP-Adresse
+    server_name 192.168.56.10; # Ersetze dies durch deine Domain oder IP-Adresse
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
@@ -95,7 +95,7 @@ server {
 
     location / {
         include proxy_params;
-        proxy_pass http://127.0.0.1:8000;
+        proxy_pass http://192.168.56.10:8000;
     }
 }
 EOF
@@ -111,5 +111,7 @@ ufw allow 'Nginx Full'
 
 # Nginx neu starten
 systemctl restart nginx
+systemctl daemon-reload
+systemctl restart gunicorn
 
 echo "Installation abgeschlossen."
