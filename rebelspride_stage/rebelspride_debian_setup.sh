@@ -49,7 +49,7 @@ sleep 1
 usermod -aG sudo rebelspride
 echo "${Green}Switching to new user...${NC}"
 sleep 2
-sudo -u rebelspride bash -c '
+-u rebelspride bash -c '
 echo "${Green}Installing NGINX...${NC}"
 sleep 2
 sudo apt install nginx
