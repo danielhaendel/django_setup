@@ -3,7 +3,7 @@
 # License: BOCHUM REBELS e.V.
 # https://raw.githubusercontent.com/danielhaendel/django_setup/master/djangostage/rebelspride_setup.sh
 #
-# bash -c "$(wget -qO - https://raw.githubusercontent.com/danielhaendel/django_setup/master/rebelspride_stage/rebelspride_setup.sh)"
+# bash -c "$(wget -qO - https://raw.githubusercontent.com/danielhaendel/django_setup/master/rebelspride_stage/rebelspride_debian_setup.sh)"
 
 clear
 Black="\[\033[0;30m\]"        # Black
@@ -32,10 +32,15 @@ echo -e "Please wait, updating system..."
 echo ""
 sleep 5
 #update system
-sudo apt-get update
-sudo apt-get upgrade -y
+apt-get update && apt-get upgrade -y
+
+hostnamectl set-hostname rebelspride
+echo "rebelspride" > /etc/hostname
+hostname
+sleep 2
 #add user to sudo group
-apt install -y python3-pip python3-dev libpq-dev nginx git
+apt-get install -y python3-pip python3-dev libpq-dev nginx git
+apt-get install git -y
 #create new user
 echo "Creating new user (rebelspride)..."
 sleep 2

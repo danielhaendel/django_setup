@@ -1,0 +1,78 @@
+Um Ihre Debian-VM in VirtualBox mit diesen Spezifikationen zu konfigurieren, gehen Sie wie folgt vor:
+
+Schritt 1: Netzwerkkarten in VirtualBox einrichten
+Für enp0s3 (Host-Only):
+Gehen Sie in den Einstellungen der VM zu "Netzwerk".
+Wählen Sie "Adapter 1".
+Setzen Sie den angehängten Typ auf "Host-Only-Adapter".
+Wählen Sie den entsprechenden Host-Only-Netzwerkadapter aus, der die IP-Adresse 192.168.56.1 verwendet.
+Für enp0s8 (Netzwerkbrücke):
+Gehen Sie weiter zu "Adapter 2".
+Aktivieren Sie diesen Adapter und setzen Sie den angehängten Typ auf "Netzwerkbrücke".
+Wählen Sie den gewünschten Netzwerkadapter Ihres Host-Systems aus, über den die VM eine IP-Adresse über DHCP beziehen
+soll.
+Schritt 2: Netzwerkkonfiguration in Debian einrichten
+Öffnen Sie die Konfigurationsdatei: Als nächstes müssen Sie die Netzwerkkonfigurationsdatei Ihrer Debian-VM bearbeiten.
+Öffnen Sie /etc/network/interfaces in einem Texteditor Ihrer Wahl als Root. Zum Beispiel:
+
+        sudo nano /etc/network/interfaces
+
+Fügen Sie die Konfiguration für enp0s3 (Host-Only) hinzu: Konfigurieren Sie enp0s3 mit einer statischen IP-Adresse wie
+folgt:
+
+
+
+        # Host-Only Netzwerkkarte
+        allow-hotplug enp0s3
+        iface enp0s3 inet static
+            address 192.168.56.10
+            netmask 255.255.255.0
+            network 192.168.56.0
+            broadcast 192.168.56.255
+
+Dies weist enp0s3 die statische IP-Adresse 192.168.56.10 zu.
+Fügen Sie die Konfiguration für enp0s8 (Netzwerkbrücke) hinzu: Konfigurieren Sie enp0s8 für DHCP,
+sodass diese Schnittstelle automatisch eine IP-Adresse bezieht:
+
+        # Netzwerkbrücke
+        allow-hotplug enp0s8
+        iface enp0s8 inet dhcp
+
+
+Speichern und Schließen: Nachdem Sie Ihre Konfigurationen hinzugefügt haben, speichern und schließen Sie die Datei.
+Netzwerkdienst neu starten: Um die neuen Einstellungen anzuwenden, müssen Sie den Netzwerkdienst neu starten. Dies
+
+kann mit dem folgenden Befehl gemacht werden:
+
+            sudo systemctl restart networking
+
+
+Damit haben Sie Ihre primäre Netzwerkkarte (enp0s3) für Host-Only Networking mit einer festen IP-Adresse konfiguriert
+und die zweite Netzwerkkarte (enp0s8) für eine Netzwerkbrücke, die über DHCP eine IP-Adresse beziehen wird. Stellen Sie
+sicher, dass Sie die VM neu starten oder den Netzwerkdienst neu starten, damit die Änderungen wirksam werden.
+
+
+
+nano /etc/network/interfaces
+
+
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface (Host-Only)
+allow-hotplug enp0s3
+iface enp0s3 inet static
+        address 192.168.56.10
+        netmask 255.255.255.0
+        network 192.168.56.0
+        broadcast 192.168.56.255
+
+# The secoundary network interface (Network-Bridge)
+allow-hotplug enp0s8
+iface enp0s8 inet dhcp
