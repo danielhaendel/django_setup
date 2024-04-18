@@ -52,18 +52,29 @@ echo "rebelspride" > /etc/hostname
 
 # Erstelle das Virtual Environment und installiere Abhängigkeiten als der Benutzer "rebelspride"
 su - rebelspride -c "
+# Wechsle in das Home-Verzeichnis
 cd ~
-mkdir rebelspride
-cd rebelspride
+
+# Klonen des Git-Repositories. Das erstellt ein Verzeichnis 'rebelspride' mit dem Inhalt des Repositories
 git clone https://github.com/danielhaendel/rebelspride
-cd /home/rebelspride
+
+# Wechsle in das geklonte Verzeichnis
+cd rebelspride
+
+# Erstelle ein Virtual Environment im geklonten Verzeichnis
 python3 -m venv stage_env
+
+# Aktiviere das Virtual Environment
 source stage_env/bin/activate
-pip install django gunicorn
-django-admin startproject rebelspride .
-cd /home/rebelspride/rebelspride
+
+# Installiere Abhängigkeiten
+pip install django gunicorn python-dotenv
+
+# Führe Migrationen aus (gehe davon aus, dass das Projekt bereits konfiguriert ist)
 python manage.py migrate
-python manage.py collectstatic -y
+
+# Sammle statische Dateien
+python manage.py collectstatic --noinput
 "
 
 # Gunicorn systemd Service-Datei erstellen
@@ -75,7 +86,7 @@ After=network.target
 [Service]
 User=rebelspride
 Group=www-data
-WorkingDirectory=/home/rebelspride/rebelspride
+WorkingDirectory=/home/rebelspride/rebelspride/rebelspride
 ExecStart=/home/rebelspride/stage_env/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 rebelspride.wsgi:application
 
 [Install]
@@ -98,8 +109,8 @@ server {
     }
 
     location / {
-        include proxy_params;
-        proxy_pass http://192.168.1.123:8000;
+    include proxy_params;
+    proxy_pass http://127.0.0.1:8000;
     }
 }
 EOF
