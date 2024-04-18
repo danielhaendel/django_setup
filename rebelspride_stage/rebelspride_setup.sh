@@ -3,7 +3,7 @@
 # License: BOCHUM REBELS e.V.
 # https://raw.githubusercontent.com/danielhaendel/django_setup/master/djangostage/rebelspride_setup.sh
 #
-# bash -c "$(wget -qO - https://raw.githubusercontent.com/danielhaendel/django_setup/master/rebelspride_stage/rebelspride_setup.sh)"
+#bash -c "$(wget -qO - https://raw.githubusercontent.com/danielhaendel/django_setup/master/rebelspride_stage/rebelspride_setup.sh)"
 
 clear
 Black="\[\033[0;30m\]"        # Black
@@ -37,6 +37,7 @@ sudo apt-get upgrade -y
 #add user to sudo group
 apt install -y python3-pip python3-dev libpq-dev nginx git
 #create new user
+apt-get update && apt-get install sudo
 echo "Creating new user (rebelspride)..."
 sleep 2
 adduser rebelspride
@@ -66,11 +67,12 @@ echo "${Green}Install Gunicorn...${NC}"
 pip install gunicorn
 echo "${Green}Initialize Django Projekt...${NC}"
 django-admin startproject rebelspride
-cd /rebelspride
+cd /home/rebelspride/rebelspride
 python manage.py migrate
-python manage.py makemigrations
 python manage.py collectstatic
+su - rebelspride
 #hier muss die gunicorn config rein sudo nano /etc/systemd/system/gunicorn.service
+#ExecStart=/home/rebelspride/rebelspride_env/bin/gunicorn --workers 3 --bind unix:/home/rebelspride/rebelspride/rebelspride/rebelspride.sock rebelspride.wsgi:application
 #nun nginx config
 #sudo nano /etc/nginx/sites-available/rebelspride
 #sudo ln -s /etc/nginx/sites-available/rebelspride /etc/nginx/sites-enabled
@@ -83,3 +85,4 @@ python manage.py collectstatic
 
 
 #gunicorn --bind 0.0.0.0:8000 rebelspride.wsgi
+#sudo rm /etc/nginx/sites-enabled/rebelspride
