@@ -53,6 +53,10 @@ echo "rebelspride" > /etc/hostname
 # Erstelle das Virtual Environment und installiere Abhängigkeiten als der Benutzer "rebelspride"
 su - rebelspride -c "
 cd ~
+mkdir rebelspride
+cd rebelspride
+git clone https://github.com/danielhaendel/rebelspride
+cd /home/rebelspride
 python3 -m venv stage_env
 source stage_env/bin/activate
 pip install django gunicorn
@@ -71,7 +75,7 @@ After=network.target
 [Service]
 User=rebelspride
 Group=www-data
-WorkingDirectory=/home/rebelspride
+WorkingDirectory=/home/rebelspride/rebelspride
 ExecStart=/home/rebelspride/stage_env/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 rebelspride.wsgi:application
 
 [Install]
@@ -86,16 +90,16 @@ systemctl enable gunicorn
 cat > /etc/nginx/sites-available/rebelspride << EOF
 server {
     listen 80;
-    server_name 192.168.56.10; # Ersetze dies durch deine Domain oder IP-Adresse
+    server_name 192.168.1.123; # Ersetze dies durch deine Domain oder IP-Adresse
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
-        root /home/rebelspride;
+        root /home/rebelspride/rebelspride;
     }
 
     location / {
         include proxy_params;
-        proxy_pass http://192.168.56.10:8000;
+        proxy_pass http://192.168.1.123:8000;
     }
 }
 EOF
