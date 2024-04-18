@@ -71,9 +71,10 @@ echo "${Green}Install Gunicorn...${NC}"
 pip install gunicorn
 echo "${Green}Initialize Django Projekt...${NC}"
 django-admin startproject rebelspride
-cd /rebelspride
+cd /home/rebelspride/rebelspride/rebelspride
 python manage.py migrate
 python manage.py collectstatic
+cd
 echo "[Unit]
 Description=gunicorn daemon
 After=network.target
