@@ -40,7 +40,6 @@ hostname
 sleep 2
 #add user to sudo group
 apt-get install -y python3-pip python3-dev libpq-dev nginx git
-apt-get install git -y
 #create new user
 echo "Creating new user (rebelspride)..."
 sleep 2
@@ -73,18 +72,44 @@ echo "${Green}Initialize Django Projekt...${NC}"
 django-admin startproject rebelspride
 cd /rebelspride
 python manage.py migrate
-python manage.py makemigrations
 python manage.py collectstatic
-#hier muss die gunicorn config rein sudo nano /etc/systemd/system/gunicorn.service
-#nun nginx config
-#sudo nano /etc/nginx/sites-available/rebelspride
-#sudo ln -s /etc/nginx/sites-available/rebelspride /etc/nginx/sites-enabled
-#sudo nginx -t
-#sudo systemctl restart nginx
-#sudo systemctl enable gunicorn
-#sudo systemctl start gunicorn
-#sudo ufw allow 'Nginx Full'
-'
+echo "[Unit]
+Description=gunicorn daemon
+After=network.target
 
+[Service]
+User=rebelspride
+Group=www-data
+WorkingDirectory=/home/rebelspride/rebelspride/rebelspride
+ExecStart=/home/rebelspride/stage_env/bin/gunicorn --workers 3 --bind unix:/home/rebelspride/rebelspride/rebelspride/rebelspride.sock rebelspride.wsgi:application
+
+[Install]
+WantedBy=multi-user.target" > /etc/systemd/system/gunicorn.service
+echo "Gunicorn config wurde erstellt..."
+sleep 2
+echo "server {
+    listen 80;
+    server_name 192.168.178.177;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /home/rebelspride/rebelspride;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/rebelspride/rebelspride/rebelspride/rebelspride.sock;
+    }
+}" > /etc/nginx/sites-available/rebelspride
+echo "NGINX config wurde erstellt..."
+sleep 2
+sudo ln -s /etc/nginx/sites-available/rebelspride /etc/nginx/sites-enabled
+sudo nginx -t
+sudo systemctl restart nginx
+sudo systemctl enable gunicorn
+sudo systemctl start gunicorn
+'
+sudo ufw allow 'Nginx Full'
+su - rebelspride
 
 #gunicorn --bind 0.0.0.0:8000 rebelspride.wsgi
