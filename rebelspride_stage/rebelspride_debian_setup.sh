@@ -28,53 +28,35 @@ cat <<"EOF"
                                      BOCHUM REBELS e.V.
 EOF
 echo ""
-echo -e "Please wait, updating system..."
-echo ""
-sleep 5
-#update system
+#!/bin/bash
+
+# System-Update
 apt-get update && apt-get upgrade -y
-apt-get install sudo -y
-apt-get install ufw -y
+
+# Installation der notwendigen Pakete
+apt-get install -y python3-pip python3-dev libpq-dev nginx git ufw
+
+# Setzen des Hostnamens
 hostnamectl set-hostname rebelspride
 echo "rebelspride" > /etc/hostname
-hostname
-sleep 2
-#add user to sudo group
-apt-get install -y python3-pip python3-dev libpq-dev nginx git
-#create new user
-echo "Creating new user (rebelspride)..."
-sleep 2
+
+# Benutzer erstellen und zur sudo-Gruppe hinzufügen
 adduser rebelspride
-echo "Adding user to sudo group..."
-sleep 1
 usermod -aG sudo rebelspride
-echo "${Green}Switching to new user...${NC}"
-sleep 2
+
+# Virtual Environment einrichten
 sudo -u rebelspride bash -c '
-echo "${Green}Installing NGINX...${NC}"
-sleep 2
-sudo apt install nginx
-echo "${Green}Installing Python VEnv...${NC}"
-sleep 2
-sudo apt install -y python3-venv
-echo "${Green}Changing directory...${NC}"
-sleep 2
 cd /home/rebelspride
-echo "${Green}Creating new Python VEnv...${NC}"
-sleep 2
 python3 -m venv stage_env
 source stage_env/bin/activate
-echo "${Green}Install Django Project...${NC}"
-pip install django
-sleep 2
-echo "${Green}Install Gunicorn...${NC}"
-pip install gunicorn
-echo "${Green}Initialize Django Projekt...${NC}"
-django-admin startproject rebelspride
-cd /home/rebelspride/rebelspride/rebelspride
-python manage.py migrate
-python manage.py collectstatic
-cd
+
+# Django und Gunicorn installieren
+pip install django gunicorn
+
+# Django-Projekt initialisieren
+django-admin startproject rebelspride .
+
+# Gunicorn systemd Service-Datei erstellen
 echo "[Unit]
 Description=gunicorn daemon
 After=network.target
@@ -82,16 +64,24 @@ After=network.target
 [Service]
 User=rebelspride
 Group=www-data
-WorkingDirectory=/home/rebelspride/rebelspride/rebelspride
-ExecStart=/home/rebelspride/stage_env/bin/gunicorn --workers 3 --bind unix:/home/rebelspride/rebelspride/rebelspride/rebelspride.sock rebelspride.wsgi:application
+WorkingDirectory=/home/rebelspride/rebelspride
+ExecStart=/home/rebelspride/stage_env/bin/gunicorn \
+          --workers 3 \
+          --bind 0.0.0.0:8000 \
+          rebelspride.wsgi:application
+
 
 [Install]
 WantedBy=multi-user.target" > /etc/systemd/system/gunicorn.service
-echo "Gunicorn config wurde erstellt..."
-sleep 2
+
+# Gunicorn starten und aktivieren
+systemctl start gunicorn
+systemctl enable gunicorn
+
+# Nginx-Konfiguration für das Projekt
 echo "server {
     listen 80;
-    server_name 192.168.178.177;
+    server_name 192.168.56.10;
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
@@ -99,19 +89,22 @@ echo "server {
     }
 
     location / {
-        include proxy_params;
-        proxy_pass http://unix:/home/rebelspride/rebelspride/rebelspride/rebelspride.sock;
+    proxy_pass http://192.168.56.10:8000;
+    include proxy_params;
     }
 }" > /etc/nginx/sites-available/rebelspride
-echo "NGINX config wurde erstellt..."
-sleep 2
-sudo ln -s /etc/nginx/sites-available/rebelspride /etc/nginx/sites-enabled
-sudo nginx -t
-sudo systemctl restart nginx
-sudo systemctl enable gunicorn
-sudo systemctl start gunicorn
-'
-sudo ufw allow 'Nginx Full'
-su - rebelspride
 
-#gunicorn --bind 0.0.0.0:8000 rebelspride.wsgi
+# Symbolischer Link für Nginx
+ln -s /etc/nginx/sites-available/rebelspride /etc/nginx/sites-enabled
+
+# Default-Seite von Nginx entfernen
+rm /etc/nginx/sites-enabled/default
+
+# Firewall konfigurieren, um Nginx zuzulassen
+ufw allow 'Nginx Full'
+
+# Nginx neu starten
+systemctl restart nginx
+'
+
+echo "Installation abgeschlossen...."
