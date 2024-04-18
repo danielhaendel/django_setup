@@ -34,6 +34,7 @@ sleep 5
 #update system
 apt-get update && apt-get upgrade -y
 apt-get install sudo -y
+apt-get install ufw -y
 hostnamectl set-hostname rebelspride
 echo "rebelspride" > /etc/hostname
 hostname
