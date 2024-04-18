@@ -33,7 +33,7 @@ echo ""
 sleep 5
 #update system
 apt-get update && apt-get upgrade -y
-
+apt-get install sudo -y
 hostnamectl set-hostname rebelspride
 echo "rebelspride" > /etc/hostname
 hostname
@@ -49,7 +49,7 @@ sleep 1
 usermod -aG sudo rebelspride
 echo "${Green}Switching to new user...${NC}"
 sleep 2
--u rebelspride bash -c '
+sudo -u rebelspride bash -c '
 echo "${Green}Installing NGINX...${NC}"
 sleep 2
 sudo apt install nginx
