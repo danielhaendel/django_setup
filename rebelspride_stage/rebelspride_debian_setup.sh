@@ -30,6 +30,14 @@ EOF
 echo ""
 #!/bin/bash
 
+# Prüfe, ob das Skript als Root ausgeführt wird
+if [ "$(id -u)" != "0" ]; then
+   echo "Dieses Skript muss als Root ausgeführt werden" 1>&2
+   exit 1
+fi
+
+# Beginne mit der eigentlichen Installation
+
 # System-Update
 apt-get update && apt-get upgrade -y
 
@@ -40,71 +48,68 @@ apt-get install -y python3-pip python3-dev libpq-dev nginx git ufw
 hostnamectl set-hostname rebelspride
 echo "rebelspride" > /etc/hostname
 
-# Benutzer erstellen und zur sudo-Gruppe hinzufügen
-adduser rebelspride
-usermod -aG sudo rebelspride
+# Erstellen und zur sudo-Gruppe hinzufügen des Benutzers erfolgt hier nicht mehr, da das Skript als Root ausgeführt wird.
 
-# Virtual Environment einrichten
-sudo -u rebelspride bash -c '
-cd /home/rebelspride
+# Erstelle das Virtual Environment und installiere Abhängigkeiten als der Benutzer "rebelspride"
+su - rebelspride -c "
+cd ~
 python3 -m venv stage_env
 source stage_env/bin/activate
-
-# Django und Gunicorn installieren
 pip install django gunicorn
-
-# Django-Projekt initialisieren
 django-admin startproject rebelspride .
+cd /home/rebelspride/rebelspride
+python manage.py migrate
+python manage.py collectstatic -y
+"
 
 # Gunicorn systemd Service-Datei erstellen
-echo "[Unit]
+cat > /etc/systemd/system/gunicorn.service << EOF
+[Unit]
 Description=gunicorn daemon
 After=network.target
 
 [Service]
 User=rebelspride
 Group=www-data
-WorkingDirectory=/home/rebelspride/rebelspride
-ExecStart=/home/rebelspride/stage_env/bin/gunicorn \
-          --workers 3 \
-          --bind 0.0.0.0:8000 \
-          rebelspride.wsgi:application
-
+WorkingDirectory=/home/rebelspride
+ExecStart=/home/rebelspride/stage_env/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 rebelspride.wsgi:application
 
 [Install]
-WantedBy=multi-user.target" > /etc/systemd/system/gunicorn.service
+WantedBy=multi-user.target
+EOF
 
 # Gunicorn starten und aktivieren
 systemctl start gunicorn
 systemctl enable gunicorn
 
 # Nginx-Konfiguration für das Projekt
-echo "server {
+cat > /etc/nginx/sites-available/rebelspride << EOF
+server {
     listen 80;
-    server_name 192.168.56.10;
+    server_name deinserver.de; # Ersetze dies durch deine Domain oder IP-Adresse
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
-        root /home/rebelspride/rebelspride;
+        root /home/rebelspride;
     }
 
     location / {
-    proxy_pass http://192.168.56.10:8000;
-    include proxy_params;
+        include proxy_params;
+        proxy_pass http://127.0.0.1:8000;
     }
-}" > /etc/nginx/sites-available/rebelspride
+}
+EOF
 
-# Symbolischer Link für Nginx
-ln -s /etc/nginx/sites-available/rebelspride /etc/nginx/sites-enabled
+# Symbolischen Link für Nginx erstellen
+ln -s /etc/nginx/sites-available/rebelspride /etc/nginx/sites-enabled/rebelspride || true
 
 # Default-Seite von Nginx entfernen
-rm /etc/nginx/sites-enabled/default
+rm -f /etc/nginx/sites-enabled/default
 
 # Firewall konfigurieren, um Nginx zuzulassen
 ufw allow 'Nginx Full'
 
 # Nginx neu starten
 systemctl restart nginx
-'
 
-echo "Installation abgeschlossen...."
+echo "Installation abgeschlossen."
