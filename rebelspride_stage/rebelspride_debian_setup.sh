@@ -50,13 +50,13 @@ echo "rebelspride" > /etc/hostname
 
 # Erstellen und zur sudo-Gruppe hinzufügen des Benutzers erfolgt hier nicht mehr, da das Skript als Root ausgeführt wird.
 
+
+# Führe die nächsten Befehle als Benutzer "rebelspride" aus
+su rebelspride -c "cd ~ && \
 # Frage nach dem GitHub Personal Access Token
 read -p "Bitte gib dein GitHub Personal Access Token ein: " token
 read -p "Bitte gib deinen GitHub Benutzernamen ein: " username
 read -p "Bitte gib den Namen des Repositories ein, das du klonen möchtest: " repo
-
-# Führe die nächsten Befehle als Benutzer "rebelspride" aus
-su rebelspride -c "cd ~ && \
 git clone https://$token@github.com/$username/$repo && \
 cd $repo && \
 python3 -m venv stage_env && \
