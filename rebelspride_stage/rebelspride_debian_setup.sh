@@ -50,18 +50,17 @@ echo "rebelspride" > /etc/hostname
 
 # Erstellen und zur sudo-Gruppe hinzufügen des Benutzers erfolgt hier nicht mehr, da das Skript als Root ausgeführt wird.
 
+# Frage nach dem GitHub Personal Access Token
+read -p "Bitte gib dein GitHub Personal Access Token ein: " token
+read -p "Bitte gib deinen GitHub Benutzernamen ein: " username
+read -p "Bitte gib den Namen des Repositories ein, das du klonen möchtest: " repo
+
 # Erstelle das Virtual Environment und installiere Abhängigkeiten als der Benutzer "rebelspride"
 su - rebelspride -c "
 # Wechsle in das Home-Verzeichnis
 cd ~
 
 # Klonen des Git-Repositories. Das erstellt ein Verzeichnis 'rebelspride' mit dem Inhalt des Repositories
-# Frage nach dem GitHub Personal Access Token
-read -p "Bitte gib dein GitHub Personal Access Token ein: " token
-read -p "Bitte gib deinen GitHub Benutzernamen ein: " username
-read -p "Bitte gib den Namen des Repositories ein, das du klonen möchtest: " repo
-
-# Baue die URL für das Klonen
 repo_url="https://$token@github.com/$username/$repo"
 
 # Klone das Repository
