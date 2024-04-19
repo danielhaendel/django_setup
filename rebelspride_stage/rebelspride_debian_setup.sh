@@ -128,6 +128,8 @@ server {
 }
 EOF
 
+# Symbolischen Link für Nginx entfernen, falls vorhanden
+sudo rm /etc/nginx/sites-enabled/rebelspride
 # Symbolischen Link für Nginx erstellen
 ln -s /etc/nginx/sites-available/rebelspride /etc/nginx/sites-enabled/rebelspride || true
 
