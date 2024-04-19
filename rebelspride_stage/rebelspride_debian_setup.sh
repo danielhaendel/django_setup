@@ -55,24 +55,12 @@ read -p "Bitte gib dein GitHub Personal Access Token ein: " token
 read -p "Bitte gib deinen GitHub Benutzernamen ein: " username
 read -p "Bitte gib den Namen des Repositories ein, das du klonen möchtest: " repo
 
-# Erstelle das Virtual Environment und installiere Abhängigkeiten als der Benutzer "rebelspride"
+# Führe die nächsten Befehle als Benutzer "rebelspride" aus
 su - rebelspride -c "
-# Wechsle in das Home-Verzeichnis
 cd ~
-
-# Klonen des Git-Repositories. Das erstellt ein Verzeichnis 'rebelspride' mit dem Inhalt des Repositories
-repo_url="https://$token@github.com/$username/$repo"
-
-# Klone das Repository
-git clone $repo_url
-
-# Lösche die Variable, die das Token enthält, aus dem Speicher
-unset token
-
-#git clone https://github.com/danielhaendel/rebelspride
-
-# Wechsle in das geklonte Verzeichnis
-cd rebelspride
+repo_url='https://\$token@github.com/\$username/\$repo'
+git clone \$repo_url
+cd \$repo
 
 # Erstelle ein Virtual Environment im geklonten Verzeichnis
 python3 -m venv stage_env
