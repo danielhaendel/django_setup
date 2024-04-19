@@ -56,27 +56,16 @@ read -p "Bitte gib deinen GitHub Benutzernamen ein: " username
 read -p "Bitte gib den Namen des Repositories ein, das du klonen möchtest: " repo
 
 # Führe die nächsten Befehle als Benutzer "rebelspride" aus
-su - rebelspride -c "
-cd ~
-repo_url='https://\$token@github.com/\$username/\$repo'
-git clone \$repo_url
-cd \$repo
-
-# Erstelle ein Virtual Environment im geklonten Verzeichnis
-python3 -m venv stage_env
-
-# Aktiviere das Virtual Environment
-source stage_env/bin/activate
-
-# Installiere Abhängigkeiten
-pip install django gunicorn python-dotenv
-
-# Führe Migrationen aus (gehe davon aus, dass das Projekt bereits konfiguriert ist)
-python manage.py migrate
-
-# Sammle statische Dateien
-python manage.py collectstatic --noinput
-"
+su rebelspride -c "cd ~ && \
+git clone https://$token@github.com/$username/$repo && \
+cd $repo && \
+python3 -m venv stage_env && \
+source stage_env/bin/activate && \
+pip install django gunicorn python-dotenv && \
+django-admin startproject $repo . && \
+cd $repo && \
+python manage.py migrate && \
+python manage.py collectstatic --noinput"
 
 # Gunicorn systemd Service-Datei erstellen
 cat > /etc/systemd/system/gunicorn.service << EOF
