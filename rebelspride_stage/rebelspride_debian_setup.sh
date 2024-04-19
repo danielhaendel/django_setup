@@ -49,23 +49,37 @@ hostnamectl set-hostname rebelspride
 echo "rebelspride" > /etc/hostname
 
 # Erstellen und zur sudo-Gruppe hinzufügen des Benutzers erfolgt hier nicht mehr, da das Skript als Root ausgeführt wird.
+echo "Creating new user (rebelspride)..."
+sleep 2
+adduser rebelspride
+echo "Adding user to sudo group..."
+sleep 1
+usermod -aG sudo rebelspride
 
-
-# Führe die nächsten Befehle als Benutzer "rebelspride" aus
-su rebelspride -c "cd ~ && \
-# Frage nach dem GitHub Personal Access Token
+# Frage nach dem GitHub Personal Access Token und anderen Informationen außerhalb des su Blocks
 read -p "Bitte gib dein GitHub Personal Access Token ein: " token
 read -p "Bitte gib deinen GitHub Benutzernamen ein: " username
 read -p "Bitte gib den Namen des Repositories ein, das du klonen möchtest: " repo
-git clone https://$token@github.com/$username/$repo && \
-cd $repo && \
-python3 -m venv stage_env && \
-source stage_env/bin/activate && \
-pip install django gunicorn python-dotenv && \
-django-admin startproject $repo . && \
-cd $repo && \
-python manage.py migrate && \
-python manage.py collectstatic --noinput"
+
+# Exportiere die gelesenen Variablen, damit sie in der Umgebung des su-Befehls verfügbar sind
+export token username repo
+
+# Führe die nächsten Befehle als Benutzer "rebelspride" aus
+su rebelspride -c '
+cd ~
+echo "Repository: $repo wird geklont..."
+git clone https://$token@github.com/$username/$repo
+cd $repo
+python3 -m venv stage_env
+source stage_env/bin/activate
+pip install django gunicorn python-dotenv
+django-admin startproject myproject .
+python manage.py migrate
+python manage.py collectstatic --noinput
+'
+
+# Entferne die exportierten Variablen aus der Umgebung
+unset token username repo
 
 # Gunicorn systemd Service-Datei erstellen
 cat > /etc/systemd/system/gunicorn.service << EOF
@@ -87,11 +101,12 @@ EOF
 systemctl start gunicorn
 systemctl enable gunicorn
 
+read -p "Bitte gib die Server-IP Adresse ein: " ip_server
 # Nginx-Konfiguration für das Projekt
 cat > /etc/nginx/sites-available/rebelspride << EOF
 server {
     listen 80;
-    server_name 192.168.1.123; # Ersetze dies durch deine Domain oder IP-Adresse
+    server_name $ip_server && ; # Ersetze dies durch deine Domain oder IP-Adresse
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
