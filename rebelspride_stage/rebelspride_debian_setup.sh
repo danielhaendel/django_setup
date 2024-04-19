@@ -106,7 +106,7 @@ read -p "Bitte gib die Server-IP Adresse ein: " ip_server
 cat > /etc/nginx/sites-available/rebelspride << EOF
 server {
     listen 80;
-    server_name $ip_server && ; # Ersetze dies durch deine Domain oder IP-Adresse
+    server_name $ip_server; # Ersetze dies durch deine Domain oder IP-Adresse
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
