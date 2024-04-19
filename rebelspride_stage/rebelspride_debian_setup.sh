@@ -56,7 +56,21 @@ su - rebelspride -c "
 cd ~
 
 # Klonen des Git-Repositories. Das erstellt ein Verzeichnis 'rebelspride' mit dem Inhalt des Repositories
-git clone https://github.com/danielhaendel/rebelspride
+# Frage nach dem GitHub Personal Access Token
+read -p "Bitte gib dein GitHub Personal Access Token ein: " token
+read -p "Bitte gib deinen GitHub Benutzernamen ein: " username
+read -p "Bitte gib den Namen des Repositories ein, das du klonen möchtest: " repo
+
+# Baue die URL für das Klonen
+repo_url="https://$token@github.com/$username/$repo"
+
+# Klone das Repository
+git clone $repo_url
+
+# Lösche die Variable, die das Token enthält, aus dem Speicher
+unset token
+
+#git clone https://github.com/danielhaendel/rebelspride
 
 # Wechsle in das geklonte Verzeichnis
 cd rebelspride
